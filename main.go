@@ -6,25 +6,30 @@ import (
 )
 
 func main() {
-	if len(os.Args) > 2 {
-		fmt.Println("too many arguments provided")
-		os.Exit(1)
-	}
 	if len(os.Args) < 2 {
 		fmt.Println("no website provided")
-		os.Exit(1)
+		return
 	}
-
-	rawURL := os.Args[1]
+	if len(os.Args) > 2 {
+		fmt.Println("too many arguments provided")
+		return
+	}
+	rawBaseURL := os.Args[1]
 
 	const maxConcurrency = 3
-	cfg, err := configure(rawURL, maxConcurrency)
+	cfg, err := configure(rawBaseURL, maxConcurrency)
 	if err != nil {
-		fmt.Printf("Error - configure %v", err)
+		fmt.Printf("Error - configure: %v", err)
 		return
 	}
 
+	fmt.Printf("starting crawl of: %s...\n", rawBaseURL)
+
+	cfg.wg.Add(1)
+	go cfg.crawlPage(rawBaseURL)
+	cfg.wg.Wait()
+
 	for normalizedURL, count := range cfg.pages {
-		fmt.Printf("%s: %d\n", normalizedURL, count)
+		fmt.Printf("%d - %s\n", count, normalizedURL)
 	}
 }

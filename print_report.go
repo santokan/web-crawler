@@ -12,13 +12,13 @@ type Page struct {
 
 func printReport(pages map[string]int, baseURL string) {
 	fmt.Println("=============================")
-	fmt.Printf("Report for %s\n", baseURL)
+	fmt.Printf("REPORT for %s\n", baseURL)
 	fmt.Println("=============================")
 	sortedPages := sortPages(pages)
 	for _, page := range sortedPages {
 		url := page.URL
 		count := page.Count
-		fmt.Printf("Found %d internal links to %s", count, url)
+		fmt.Printf("Found %d internal links to %s\n", count, url)
 	}
 }
 
